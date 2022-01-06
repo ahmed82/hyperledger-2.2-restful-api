@@ -3,21 +3,18 @@ package com.hlf.uncccars.controller;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.commons.codec.binary.Hex;
 import org.hyperledger.fabric.gateway.Contract;
-import org.hyperledger.fabric.gateway.ContractException;
 import org.hyperledger.fabric.gateway.Gateway;
 import org.hyperledger.fabric.gateway.Network;
 import org.hyperledger.fabric.gateway.Wallet;
 import org.hyperledger.fabric.gateway.Wallets;
 import org.hyperledger.fabric.protos.common.Common.Block;
-import org.hyperledger.fabric.sdk.BlockInfo;
-import org.hyperledger.fabric.sdk.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,16 +39,103 @@ public class WebController {
 
 	@Autowired
 	AdminService adminService;
-
+	
+	@CrossOrigin(origins = "http://localhost:3000", maxAge = 360)
+	@GetMapping("/hi")
+	public String home() {
+		return "[\r\n"
+				+ "          {\r\n"
+				+ "            name: 'Frozen Yogurt',\r\n"
+				+ "            calories: 159,\r\n"
+				+ "            fat: 6.0,\r\n"
+				+ "            carbs: 24,\r\n"
+				+ "            protein: 4.0,\r\n"
+				+ "            iron: '1%',\r\n"
+				+ "          },\r\n"
+				+ "          {\r\n"
+				+ "            name: 'Ice cream sandwich',\r\n"
+				+ "            calories: 237,\r\n"
+				+ "            fat: 9.0,\r\n"
+				+ "            carbs: 37,\r\n"
+				+ "            protein: 4.3,\r\n"
+				+ "            iron: '1%',\r\n"
+				+ "          },\r\n"
+				+ "          {\r\n"
+				+ "            name: 'Eclair',\r\n"
+				+ "            calories: 262,\r\n"
+				+ "            fat: 16.0,\r\n"
+				+ "            carbs: 23,\r\n"
+				+ "            protein: 6.0,\r\n"
+				+ "            iron: '7%',\r\n"
+				+ "          },\r\n"
+				+ "          {\r\n"
+				+ "            name: 'Cupcake',\r\n"
+				+ "            calories: 305,\r\n"
+				+ "            fat: 3.7,\r\n"
+				+ "            carbs: 67,\r\n"
+				+ "            protein: 4.3,\r\n"
+				+ "            iron: '8%',\r\n"
+				+ "          },\r\n"
+				+ "          {\r\n"
+				+ "            name: 'Gingerbread',\r\n"
+				+ "            calories: 356,\r\n"
+				+ "            fat: 16.0,\r\n"
+				+ "            carbs: 49,\r\n"
+				+ "            protein: 3.9,\r\n"
+				+ "            iron: '16%',\r\n"
+				+ "          },\r\n"
+				+ "          {\r\n"
+				+ "            name: 'Jelly bean',\r\n"
+				+ "            calories: 375,\r\n"
+				+ "            fat: 0.0,\r\n"
+				+ "            carbs: 94,\r\n"
+				+ "            protein: 0.0,\r\n"
+				+ "            iron: '0%',\r\n"
+				+ "          },\r\n"
+				+ "          {\r\n"
+				+ "            name: 'Lollipop',\r\n"
+				+ "            calories: 392,\r\n"
+				+ "            fat: 0.2,\r\n"
+				+ "            carbs: 98,\r\n"
+				+ "            protein: 0,\r\n"
+				+ "            iron: '2%',\r\n"
+				+ "          },\r\n"
+				+ "          {\r\n"
+				+ "            name: 'Honeycomb',\r\n"
+				+ "            calories: 408,\r\n"
+				+ "            fat: 3.2,\r\n"
+				+ "            carbs: 87,\r\n"
+				+ "            protein: 6.5,\r\n"
+				+ "            iron: '45%',\r\n"
+				+ "          },\r\n"
+				+ "          {\r\n"
+				+ "            name: 'Donut',\r\n"
+				+ "            calories: 452,\r\n"
+				+ "            fat: 25.0,\r\n"
+				+ "            carbs: 51,\r\n"
+				+ "            protein: 4.9,\r\n"
+				+ "            iron: '22%',\r\n"
+				+ "          },\r\n"
+				+ "          {\r\n"
+				+ "            name: 'KitKat',\r\n"
+				+ "            calories: 518,\r\n"
+				+ "            fat: 26.0,\r\n"
+				+ "            carbs: 65,\r\n"
+				+ "            protein: 7,\r\n"
+				+ "            iron: '6%',\r\n"
+				+ "          },\r\n"
+				+ "        ]";
+	}
 	// helper function for getting connected to the gateway
 	private /* static */ Gateway connect() throws Exception {
 		// Load a file system based wallet for managing identities.
 		Path walletPath = Paths.get("wallet");
 		Wallet wallet = Wallets.newFileSystemWallet(walletPath);
 		// load a CCP
-		Path networkConfigPath = Paths.get("..", "..", "test-network", "organizations", "peerOrganizations",
+		//Path networkConfigPath = Paths.get("..", "..", "test-network", "organizations", "peerOrganizations",
+			//	"org1.example.com", "connection-org1.yaml");
+		Path networkConfigPath = Paths.get("C:\\Hyperledger-Fabric", "fabric-samples", "test-network", "organizations", "peerOrganizations",
 				"org1.example.com", "connection-org1.yaml");
-
 		Gateway.Builder builder = Gateway.createBuilder();
 		builder.identity(wallet, "appUser").networkConfig(networkConfigPath).discovery(true);
 		return builder.connect();
@@ -80,6 +164,7 @@ public class WebController {
 	 * BlockInfo contains the data from a {@link Block}
 	 * @throws Exception 
 	 */
+	
 	public JSONObject blockInfo() throws Exception {
 		Gateway gateway = connect();
 		// get the network and contract
@@ -91,11 +176,13 @@ public class WebController {
 		    CHANNEL_NAME
 		/* ,String(blockNum) */
 		);
-	   // Channel fooChannel = constructChannel(FOO_CHANNEL_NAME, client, sampleOrg);
-		// blockInfo = channel.queryBlockByNumber(Long.parseLong(current.toString()));
-		byte[] blockNumber = resultByte ;
-		JSONObject blockJson = new JSONObject();
-		blockJson.put("blockNumber", blockNumber);
+		
+		/*
+		 * Channel fooChannel = constructChannel(CHANNEL_NAME, client, sampleOrg);
+		 * blockInfo = channel.queryBlockByNumber(Long.parseLong(current.toString()));
+		 * byte[] blockNumber = resultByte ; JSONObject blockJson = new JSONObject();
+		 * blockJson.put("blockNumber", blockNumber);
+		 */
 		//blockJson.put("dataHash", Hex.encodeHexString(blockInfo.getDataHash()));
 		//blockJson.put("previousHashID", Hex.encodeHexString(blockInfo.getPreviousHash()));
 		// blockJson.put("calculatedBlockHash",
@@ -103,7 +190,7 @@ public class WebController {
 		// blockInfo.getPreviousHash(), blockInfo.getDataHash())));
 		//blockJson.put("envelopeCount", blockInfo.getEnvelopeCount());
 		// return new ResponseEntity<String>(blockJson, HttpStatus.OK);
-		return getSuccess(blockJson);
+		return null;//getSuccess(blockJson);
 	}
 
 	@GetMapping("/init")
