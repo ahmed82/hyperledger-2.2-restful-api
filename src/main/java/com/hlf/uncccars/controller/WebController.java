@@ -1,14 +1,28 @@
 package com.hlf.uncccars.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.apache.commons.codec.binary.Hex;
+import org.bouncycastle.asn1.ASN1Integer;
+import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.DERSequenceGenerator;
 import org.hyperledger.fabric.gateway.Contract;
 import org.hyperledger.fabric.gateway.Gateway;
 import org.hyperledger.fabric.gateway.Network;
 import org.hyperledger.fabric.gateway.Wallet;
 import org.hyperledger.fabric.gateway.Wallets;
 import org.hyperledger.fabric.protos.common.Common.Block;
+import org.hyperledger.fabric.sdk.BlockInfo;
+import org.hyperledger.fabric.sdk.BlockchainInfo;
+import org.hyperledger.fabric.sdk.Channel;
+import org.hyperledger.fabric.sdk.HFClient;
+import org.hyperledger.fabric.sdk.exception.CryptoException;
+import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
+import org.hyperledger.fabric.sdk.security.CryptoSuite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hlf.uncccars.dto.AssetDTO;
+import com.hlf.uncccars.dto.BlockInfoModel;
 import com.hlf.uncccars.service.AdminService;
 
 @RestController
@@ -33,120 +48,44 @@ import com.hlf.uncccars.service.AdminService;
 public class WebController {
 
 	Logger logger = LoggerFactory.getLogger(WebController.class);
-	
-	//private static final String FOO_CHANNEL_NAME = "foo";
+
+	// private static final String FOO_CHANNEL_NAME = "foo";
 	private static final String CHANNEL_NAME = "mychannel";
 
 	@Autowired
 	AdminService adminService;
-	
-	@CrossOrigin(origins = "http://localhost:3000", maxAge = 360)
-	@GetMapping("/hi")
-	public String home() {
-		return "[\r\n"
-				+ "          {\r\n"
-				+ "            name: 'Frozen Yogurt',\r\n"
-				+ "            calories: 159,\r\n"
-				+ "            fat: 6.0,\r\n"
-				+ "            carbs: 24,\r\n"
-				+ "            protein: 4.0,\r\n"
-				+ "            iron: '1%',\r\n"
-				+ "          },\r\n"
-				+ "          {\r\n"
-				+ "            name: 'Ice cream sandwich',\r\n"
-				+ "            calories: 237,\r\n"
-				+ "            fat: 9.0,\r\n"
-				+ "            carbs: 37,\r\n"
-				+ "            protein: 4.3,\r\n"
-				+ "            iron: '1%',\r\n"
-				+ "          },\r\n"
-				+ "          {\r\n"
-				+ "            name: 'Eclair',\r\n"
-				+ "            calories: 262,\r\n"
-				+ "            fat: 16.0,\r\n"
-				+ "            carbs: 23,\r\n"
-				+ "            protein: 6.0,\r\n"
-				+ "            iron: '7%',\r\n"
-				+ "          },\r\n"
-				+ "          {\r\n"
-				+ "            name: 'Cupcake',\r\n"
-				+ "            calories: 305,\r\n"
-				+ "            fat: 3.7,\r\n"
-				+ "            carbs: 67,\r\n"
-				+ "            protein: 4.3,\r\n"
-				+ "            iron: '8%',\r\n"
-				+ "          },\r\n"
-				+ "          {\r\n"
-				+ "            name: 'Gingerbread',\r\n"
-				+ "            calories: 356,\r\n"
-				+ "            fat: 16.0,\r\n"
-				+ "            carbs: 49,\r\n"
-				+ "            protein: 3.9,\r\n"
-				+ "            iron: '16%',\r\n"
-				+ "          },\r\n"
-				+ "          {\r\n"
-				+ "            name: 'Jelly bean',\r\n"
-				+ "            calories: 375,\r\n"
-				+ "            fat: 0.0,\r\n"
-				+ "            carbs: 94,\r\n"
-				+ "            protein: 0.0,\r\n"
-				+ "            iron: '0%',\r\n"
-				+ "          },\r\n"
-				+ "          {\r\n"
-				+ "            name: 'Lollipop',\r\n"
-				+ "            calories: 392,\r\n"
-				+ "            fat: 0.2,\r\n"
-				+ "            carbs: 98,\r\n"
-				+ "            protein: 0,\r\n"
-				+ "            iron: '2%',\r\n"
-				+ "          },\r\n"
-				+ "          {\r\n"
-				+ "            name: 'Honeycomb',\r\n"
-				+ "            calories: 408,\r\n"
-				+ "            fat: 3.2,\r\n"
-				+ "            carbs: 87,\r\n"
-				+ "            protein: 6.5,\r\n"
-				+ "            iron: '45%',\r\n"
-				+ "          },\r\n"
-				+ "          {\r\n"
-				+ "            name: 'Donut',\r\n"
-				+ "            calories: 452,\r\n"
-				+ "            fat: 25.0,\r\n"
-				+ "            carbs: 51,\r\n"
-				+ "            protein: 4.9,\r\n"
-				+ "            iron: '22%',\r\n"
-				+ "          },\r\n"
-				+ "          {\r\n"
-				+ "            name: 'KitKat',\r\n"
-				+ "            calories: 518,\r\n"
-				+ "            fat: 26.0,\r\n"
-				+ "            carbs: 65,\r\n"
-				+ "            protein: 7,\r\n"
-				+ "            iron: '6%',\r\n"
-				+ "          },\r\n"
-				+ "        ]";
-	}
+
 	// helper function for getting connected to the gateway
 	private /* static */ Gateway connect() throws Exception {
 		// Load a file system based wallet for managing identities.
 		Path walletPath = Paths.get("wallet");
 		Wallet wallet = Wallets.newFileSystemWallet(walletPath);
 		// load a CCP
-		//Path networkConfigPath = Paths.get("..", "..", "test-network", "organizations", "peerOrganizations",
-			//	"org1.example.com", "connection-org1.yaml");
-		Path networkConfigPath = Paths.get("C:\\Hyperledger-Fabric", "fabric-samples", "test-network", "organizations", "peerOrganizations",
-				"org1.example.com", "connection-org1.yaml");
+		// Path networkConfigPath = Paths.get("..", "..", "test-network",
+		// "organizations", "peerOrganizations",
+		// "org1.example.com", "connection-org1.yaml");
+		Path networkConfigPath = Paths.get("C:\\Hyperledger-Fabric", "fabric-samples", "test-network", "organizations",
+				"peerOrganizations", "org1.example.com", "connection-org1.yaml");
 		Gateway.Builder builder = Gateway.createBuilder();
 		builder.identity(wallet, "appUser").networkConfig(networkConfigPath).discovery(true);
 		return builder.connect();
 	}
 
-	private Contract getContract() throws Exception {
+	/**
+	 * 
+	 * @return Contract
+	 * @throws Exception V 1.0
+	 * @note: to get a specific contract see / V 1.0
+	 *        https://hyperledger.github.io/fabric-gateway-java/ V 2.0 you can pass
+	 *        the contract name as param
+	 * @param contractName to the getContract(String contractName)
+	 */
+	private Contract getContract(String contractName) throws Exception {
 		// connect to the network and invoke the smart contract
 		Gateway gateway = connect();
 		// get the network and contract
-		Network network = gateway.getNetwork("mychannel");
-		Contract contract = network.getContract("basic");
+		Network network = gateway.getNetwork(CHANNEL_NAME);
+		Contract contract = network.getContract(contractName);
 		return contract;
 	}
 
@@ -158,52 +97,97 @@ public class WebController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	
-
 	/**
 	 * BlockInfo contains the data from a {@link Block}
-	 * @throws Exception 
+	 * 
+	 * @throws Exception
 	 */
-	
-	public JSONObject blockInfo() throws Exception {
+	@GetMapping("/hieght")
+	public ResponseEntity<?> blockInfo() throws Exception {
 		Gateway gateway = connect();
 		// get the network and contract
-		Network network = gateway.getNetwork("mychannel");
-		//Contract contract = network.getContract("basic");
-		Contract contract = network.getContract("qscc");
-		byte[] resultByte = contract.evaluateTransaction(
-		    "GetBlockByNumber",
-		    CHANNEL_NAME
-		/* ,String(blockNum) */
-		);
-		
-		/*
-		 * Channel fooChannel = constructChannel(CHANNEL_NAME, client, sampleOrg);
-		 * blockInfo = channel.queryBlockByNumber(Long.parseLong(current.toString()));
-		 * byte[] blockNumber = resultByte ; JSONObject blockJson = new JSONObject();
-		 * blockJson.put("blockNumber", blockNumber);
+		Network network = gateway.getNetwork(CHANNEL_NAME);
+		// Contract contract = network.getContract("basic");
+		// Contract contract = network.getContract("qscc");
+
+		// Create instance of client.
+		// HFClient client = HFClient.createNewInstance();
+		Channel channel = network.getChannel();
+		BlockchainInfo BlockchainInfo = channel.queryBlockchainInfo();
+		long hieght = BlockchainInfo.getHeight();
+		// BlockchainInfo.getBlockchainInfo();
+		/**
+		 * The protobuf BlockchainInfo struct this object is based on.
+		 * queryBlockByNumber(Long.parseLong(current.toString()));
 		 */
-		//blockJson.put("dataHash", Hex.encodeHexString(blockInfo.getDataHash()));
-		//blockJson.put("previousHashID", Hex.encodeHexString(blockInfo.getPreviousHash()));
-		// blockJson.put("calculatedBlockHash",
-		// Hex.encodeHexString(SDKUtils.calculateBlockHash(org.getClient(), blockNumber,
-		// blockInfo.getPreviousHash(), blockInfo.getDataHash())));
-		//blockJson.put("envelopeCount", blockInfo.getEnvelopeCount());
-		// return new ResponseEntity<String>(blockJson, HttpStatus.OK);
-		return null;//getSuccess(blockJson);
+		BlockInfo returnedBlock = channel.queryBlockByNumber(hieght - 1);
+		JSONObject blockJson = new JSONObject();
+		blockJson.put("Hieght", hieght);
+		blockJson.put("dataHash-By-BlockchainInfo", Hex.encodeHexString(BlockchainInfo.getCurrentBlockHash()));
+		blockJson.put("previousHashID-By-BlockchainInfo", Hex.encodeHexString(BlockchainInfo.getPreviousBlockHash()));
+		blockJson.put("ChannelId", returnedBlock.getChannelId());
+
+		blockJson.put("EnvelopeCount", returnedBlock.getEnvelopeCount());
+		blockJson.put("BlockNumber", returnedBlock.getBlockNumber());
+		blockJson.put("TransactionCount", returnedBlock.getTransactionCount());
+		blockJson.put("previousHash", Hex.encodeHexString(returnedBlock.getPreviousHash()));
+		blockJson.put("dataHash-By-BlockInfo", Hex.encodeHexString(returnedBlock.getDataHash()));
+		blockJson.put("hashCode", BlockchainInfo.hashCode());
+		blockJson.put("caculateCurrentBlockhash", caculateCurrentBlockhash(returnedBlock));
+		return ResponseEntity.ok().body(blockJson);
 	}
 
+	/**
+	 * 
+	 * @param blockInfo
+	 * @return String current block hash {@summary} Replace it with
+	 *         'channel.queryBlockchainInfo()'
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws InvalidArgumentException
+	 * @throws InstantiationException
+	 * @throws NoSuchMethodException
+	 * @throws CryptoException
+	 * @throws ClassNotFoundException
+	 */
+	public static String caculateCurrentBlockhash(BlockInfo blockInfo)
+			throws IOException, IllegalAccessException, InvocationTargetException, InvalidArgumentException,
+			InstantiationException, NoSuchMethodException, CryptoException, ClassNotFoundException {
+		CryptoSuite cryptoSuite = CryptoSuite.Factory.getCryptoSuite();
+		ByteArrayOutputStream s = new ByteArrayOutputStream();
+		DERSequenceGenerator seq = new DERSequenceGenerator(s);
+		seq.addObject(new ASN1Integer(blockInfo.getBlockNumber()));
+		seq.addObject(new DEROctetString(blockInfo.getPreviousHash()));
+		seq.addObject(new DEROctetString(blockInfo.getDataHash()));
+
+		seq.close();
+		byte[] hash = cryptoSuite.hash(s.toByteArray());
+		return Hex.encodeHexString(hash);
+	}
+
+	/****************************************************************************
+	 * If you use SDKUtils Packages can be more easily calculated , You can try .
+	 * The code is as follows ：
+	 *****************************************************************************/
+	/*
+	 * String currentHash = Hex.encodeHexString( SDKUtils.calculateBlockHash(
+	 * this.client, blockInfo.getBlockNumber(), blockInfo.getPreviousHash(),
+	 * blockInfo.getDataHash()));
+	 */
+
+	@CrossOrigin(origins = "http://localhost:3000", maxAge = 360)
 	@GetMapping("/init")
 	public ResponseEntity<String> initLadger() throws Exception {
-		Contract contract = getContract();
+		Contract contract = getContract("basic");
 		logger.info("Submit Transaction: InitLedger creates the initial set of assets on the ledger.");
 		contract.submitTransaction("InitLedger");
 		return ResponseEntity.ok("init Ladger compleated...");
 	}
 
-	@GetMapping("/cars")
+	@GetMapping("/assets")
 	public byte[] getAllCars() throws Exception {
-		Contract contract = getContract();
+		Contract contract = getContract("basic");
 		byte[] result;
 		result = contract.evaluateTransaction("GetAllAssets");
 		logger.info("Evaluate Transaction: GetAllAssets, result: " + new String(result));
@@ -212,7 +196,7 @@ public class WebController {
 
 	@GetMapping("/car/{assetid}")
 	public byte[] getCar(@PathVariable String assetid) throws Exception {
-		Contract contract = getContract();
+		Contract contract = getContract("basic");
 		// ReadAsset returns an asset with given assetID. Example= "asset13"
 		byte[] result = contract.evaluateTransaction("ReadAsset", assetid);
 		logger.info("result: " + new String(result));
@@ -222,7 +206,7 @@ public class WebController {
 	@PostMapping("/car")
 	public ResponseEntity<?> CreateCar(@RequestBody AssetDTO assetObj) throws Exception {
 
-		Contract contract = getContract();
+		Contract contract = getContract("basic");
 		/**
 		 * CreateAsset creates an asset with ID asset13, color yellow, owner Tom, size 5
 		 * and appraisedValue of 1300 contract.submitTransaction("CreateAsset",
@@ -239,7 +223,7 @@ public class WebController {
 
 		if (assetObj.getId() != assetid)
 			return null;
-		Contract contract = getContract();
+		Contract contract = getContract("basic");
 		/**
 		 * CreateAsset creates an asset with ID asset13, color yellow, owner Tom, size 5
 		 * UpdateAsset updates an existing asset with new properties. Same args as
@@ -251,11 +235,29 @@ public class WebController {
 		return new ResponseEntity<Contract>(contract, HttpStatus.OK);
 	}
 
+	@SuppressWarnings("unused")
 	private JSONObject getSuccess(JSON json) {
 		JSONObject jsonObject = new JSONObject();
 		// jsonObject.put("code", BlockListener.SUCCESS);
 		jsonObject.put("data", json);
 		return jsonObject;
+	}
+
+	@GetMapping("/bolckinfo")
+	public ResponseEntity<?> getBlockInfo() throws Exception {
+		Gateway gateway = connect();
+		Network network = gateway.getNetwork(CHANNEL_NAME);
+		Channel channel = network.getChannel();
+		BlockchainInfo BlockchainInfo = channel.queryBlockchainInfo();
+		long hieght = BlockchainInfo.getHeight();
+		BlockInfoModel blockinfo = new BlockInfoModel();
+		BlockInfo returnedBlock = channel.queryBlockByNumber(hieght - 1);
+		blockinfo.setHieght(hieght);
+		blockinfo.setCurrentBlockHash(Hex.encodeHexString(BlockchainInfo.getCurrentBlockHash()));
+		blockinfo.setPreviousHashID(Hex.encodeHexString(BlockchainInfo.getPreviousBlockHash()));
+		blockinfo.setChannelId(returnedBlock.getChannelId());
+		blockinfo.setTransactionCount(returnedBlock.getTransactionCount());
+		return ResponseEntity.ok().body(blockinfo);
 	}
 
 }

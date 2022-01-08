@@ -1,6 +1,5 @@
 package com.hlf.uncccars.dto;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 
 public class AssetDTO {
