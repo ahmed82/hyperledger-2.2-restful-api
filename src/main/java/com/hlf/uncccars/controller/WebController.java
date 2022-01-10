@@ -19,7 +19,6 @@ import org.hyperledger.fabric.protos.common.Common.Block;
 import org.hyperledger.fabric.sdk.BlockInfo;
 import org.hyperledger.fabric.sdk.BlockchainInfo;
 import org.hyperledger.fabric.sdk.Channel;
-import org.hyperledger.fabric.sdk.HFClient;
 import org.hyperledger.fabric.sdk.exception.CryptoException;
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric.sdk.security.CryptoSuite;
@@ -45,6 +44,7 @@ import com.hlf.uncccars.service.AdminService;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "*", maxAge = 360)
 public class WebController {
 
 	Logger logger = LoggerFactory.getLogger(WebController.class);
@@ -194,7 +194,7 @@ public class WebController {
 		return result;
 	}
 
-	@GetMapping("/car/{assetid}")
+	@GetMapping("/assets/{assetid}")
 	public byte[] getCar(@PathVariable String assetid) throws Exception {
 		Contract contract = getContract("basic");
 		// ReadAsset returns an asset with given assetID. Example= "asset13"
@@ -202,8 +202,8 @@ public class WebController {
 		logger.info("result: " + new String(result));
 		return result;
 	}
-
-	@PostMapping("/car")
+	
+	@PostMapping("/assets")
 	public ResponseEntity<?> CreateCar(@RequestBody AssetDTO assetObj) throws Exception {
 
 		Contract contract = getContract("basic");
@@ -212,12 +212,11 @@ public class WebController {
 		 * and appraisedValue of 1300 contract.submitTransaction("CreateAsset",
 		 * "asset13", "yellow", "5", "Tom", "1300");
 		 */
-		contract.submitTransaction("CreateAsset", assetObj.getId(), assetObj.getColor(), assetObj.getSize(),
-				assetObj.getOwner(), assetObj.getPrice());
+		contract.submitTransaction("CreateAsset", assetObj.getId(), assetObj.getColor(), assetObj.getSize(), assetObj.getPrice());
 		return new ResponseEntity<Contract>(contract, HttpStatus.CREATED);
 	}
 
-	@PutMapping("/car/{assetid}")
+	@PutMapping("/assets/{assetid}")
 	public ResponseEntity<?> UpdateAsset(@PathVariable String assetid, @RequestBody AssetDTO assetObj)
 			throws Exception {
 
