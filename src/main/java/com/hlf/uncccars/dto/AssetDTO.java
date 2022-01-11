@@ -2,18 +2,29 @@ package com.hlf.uncccars.dto;
 
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+@JsonAutoDetect(fieldVisibility = Visibility.ANY)
 public class AssetDTO {
-	
+
+	@JsonProperty("ID")
 	private String id;
-	
+
+	@JsonProperty("Color")
 	private String color;
-	
+
+	@JsonProperty("Size")
 	private String size;
-	
+
+	@JsonProperty("Owner")
 	private String owner;
-	
-	private String price;
-	
+
+	@JsonProperty("AppraisedValue")
+	private String appraisedValue;
 
 	public AssetDTO() {
 	}
@@ -24,7 +35,7 @@ public class AssetDTO {
 		this.color = color;
 		this.size = size;
 		this.owner = owner;
-		this.price = price;
+		this.appraisedValue = price;
 	}
 
 	public String getId() {
@@ -59,22 +70,24 @@ public class AssetDTO {
 		this.owner = owner;
 	}
 
-	public String getPrice() {
-		return price;
+
+	public String getAppraisedValue() {
+		return appraisedValue;
 	}
 
-	public void setPrice(String price) {
-		this.price = price;
+	public void setAppraisedValue(String appraisedValue) {
+		this.appraisedValue = appraisedValue;
 	}
 
 	@Override
 	public String toString() {
-		return "Car [id=" + id + ", color=" + color + ", size=" + size + ", owner=" + owner + ", price=" + price + "]";
+		return "Car [id=" + id + ", color=" + color + ", size=" + size + ", owner=" + owner + ", price="
+				+ appraisedValue + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(color, id, owner, price, size);
+		return Objects.hash(color, id, owner, appraisedValue, size);
 	}
 
 	@Override
@@ -87,10 +100,7 @@ public class AssetDTO {
 			return false;
 		AssetDTO other = (AssetDTO) obj;
 		return Objects.equals(color, other.color) && id == other.id && Objects.equals(owner, other.owner)
-				&& Objects.equals(price, other.price) && size == other.size;
+				&& Objects.equals(appraisedValue, other.appraisedValue) && size == other.size;
 	}
-	
-	
-	
 
 }

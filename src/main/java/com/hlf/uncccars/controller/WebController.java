@@ -202,9 +202,14 @@ public class WebController {
 		logger.info("result: " + new String(result));
 		return result;
 	}
-	
+
 	@PostMapping("/assets")
 	public ResponseEntity<?> CreateCar(@RequestBody AssetDTO assetObj) throws Exception {
+		String id = assetObj.getId();
+		String color = assetObj.getColor();
+		String owner = assetObj.getOwner();
+		String appraisedValue = assetObj.getAppraisedValue();
+		String size = assetObj.getSize();
 
 		Contract contract = getContract("basic");
 		/**
@@ -212,8 +217,14 @@ public class WebController {
 		 * and appraisedValue of 1300 contract.submitTransaction("CreateAsset",
 		 * "asset13", "yellow", "5", "Tom", "1300");
 		 */
-		contract.submitTransaction("CreateAsset", assetObj.getId(), assetObj.getColor(), assetObj.getSize(), assetObj.getPrice());
-		return new ResponseEntity<Contract>(contract, HttpStatus.CREATED);
+
+		/*
+		 * byte[] result = contract.submitTransaction("CreateAsset", assetObj.getId(),
+		 * assetObj.getColor(), assetObj.getSize(), assetObj.getOwner(),
+		 * assetObj.getPrice());
+		 */
+		byte[] result = contract.submitTransaction("CreateAsset", id, color, size, owner, appraisedValue);
+		return new ResponseEntity<byte[]>(result, HttpStatus.CREATED);
 	}
 
 	@PutMapping("/assets/{assetid}")
@@ -224,14 +235,14 @@ public class WebController {
 			return null;
 		Contract contract = getContract("basic");
 		/**
-		 * CreateAsset creates an asset with ID asset13, color yellow, owner Tom, size 5
+		 * 
 		 * UpdateAsset updates an existing asset with new properties. Same args as
 		 * CreateAsset contract.submitTransaction("UpdateAsset", "asset1", "blue", "5",
 		 * "Tomoko", "350");
 		 */
-		contract.submitTransaction("UpdateAsset", assetObj.getId(), assetObj.getColor(), assetObj.getSize(),
-				assetObj.getOwner(), assetObj.getPrice());
-		return new ResponseEntity<Contract>(contract, HttpStatus.OK);
+		 contract.submitTransaction("UpdateAsset", assetObj.getId(), assetObj.getColor(), assetObj.getSize(),
+				assetObj.getOwner(), assetObj.getAppraisedValue());
+		return ResponseEntity.ok().build();
 	}
 
 	@SuppressWarnings("unused")
