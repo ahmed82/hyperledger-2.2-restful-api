@@ -64,7 +64,7 @@ public class WebController {
 		// Path networkConfigPath = Paths.get("..", "..", "test-network",
 		// "organizations", "peerOrganizations",
 		// "org1.example.com", "connection-org1.yaml");
-		Path networkConfigPath = Paths.get("C:\\Hyperledger-Fabric", "fabric-samples", "test-network", "organizations",
+		Path networkConfigPath = Paths.get("C:\\Users","1426391","Desktop","Desktop","test", "fabric-samples", "test-network", "organizations",
 				"peerOrganizations", "org1.example.com", "connection-org1.yaml");
 		Gateway.Builder builder = Gateway.createBuilder();
 		builder.identity(wallet, "appUser").networkConfig(networkConfigPath).discovery(true);
@@ -176,7 +176,7 @@ public class WebController {
 	 * blockInfo.getDataHash()));
 	 */
 
-	@CrossOrigin(origins = "http://localhost:3000", maxAge = 360)
+	//@CrossOrigin(origins = "http://localhost:3000", maxAge = 360)
 	@GetMapping("/init")
 	public ResponseEntity<String> initLadger() throws Exception {
 		Contract contract = getContract("basic");
