@@ -49,7 +49,6 @@ public class WebController {
 
 	Logger logger = LoggerFactory.getLogger(WebController.class);
 
-	// private static final String FOO_CHANNEL_NAME = "foo";
 	private static final String CHANNEL_NAME = "mychannel";
 
 	@Autowired
