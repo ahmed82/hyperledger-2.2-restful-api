@@ -49,23 +49,18 @@ public class WebController {
 
 	Logger logger = LoggerFactory.getLogger(WebController.class);
 
-	// private static final String FOO_CHANNEL_NAME = "foo";
 	private static final String CHANNEL_NAME = "mychannel";
 
 	@Autowired
 	AdminService adminService;
 
 	// helper function for getting connected to the gateway
-	private /* static */ Gateway connect() throws Exception {
+	private static Gateway connect() throws Exception {
 		// Load a file system based wallet for managing identities.
 		Path walletPath = Paths.get("wallet");
 		Wallet wallet = Wallets.newFileSystemWallet(walletPath);
 		// load a CCP
-		// Path networkConfigPath = Paths.get("..", "..", "test-network",
-		// "organizations", "peerOrganizations",
-		// "org1.example.com", "connection-org1.yaml");
-		Path networkConfigPath = Paths.get("C:\\Hyperledger-Fabric", "fabric-samples", "test-network", "organizations",
-				"peerOrganizations", "org1.example.com", "connection-org1.yaml");
+		Path networkConfigPath = Paths.get("..", "..", "test-network", "organizations",	"peerOrganizations", "org1.example.com", "connection-org1.yaml");
 		Gateway.Builder builder = Gateway.createBuilder();
 		builder.identity(wallet, "appUser").networkConfig(networkConfigPath).discovery(true);
 		return builder.connect();
@@ -176,7 +171,7 @@ public class WebController {
 	 * blockInfo.getDataHash()));
 	 */
 
-	@CrossOrigin(origins = "http://localhost:3000", maxAge = 360)
+	//@CrossOrigin(origins = "http://localhost:3000", maxAge = 360)
 	@GetMapping("/init")
 	public ResponseEntity<String> initLadger() throws Exception {
 		Contract contract = getContract("basic");
