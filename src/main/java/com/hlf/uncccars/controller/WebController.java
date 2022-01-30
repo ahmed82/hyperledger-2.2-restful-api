@@ -56,16 +56,12 @@ public class WebController {
 	AdminService adminService;
 
 	// helper function for getting connected to the gateway
-	private /* static */ Gateway connect() throws Exception {
+	private static Gateway connect() throws Exception {
 		// Load a file system based wallet for managing identities.
 		Path walletPath = Paths.get("wallet");
 		Wallet wallet = Wallets.newFileSystemWallet(walletPath);
 		// load a CCP
-		// Path networkConfigPath = Paths.get("..", "..", "test-network",
-		// "organizations", "peerOrganizations",
-		// "org1.example.com", "connection-org1.yaml");
-		Path networkConfigPath = Paths.get("C:\\Users","1426391","Desktop","Desktop","test", "fabric-samples", "test-network", "organizations",
-				"peerOrganizations", "org1.example.com", "connection-org1.yaml");
+		Path networkConfigPath = Paths.get("..", "..", "test-network", "organizations",	"peerOrganizations", "org1.example.com", "connection-org1.yaml");
 		Gateway.Builder builder = Gateway.createBuilder();
 		builder.identity(wallet, "appUser").networkConfig(networkConfigPath).discovery(true);
 		return builder.connect();
