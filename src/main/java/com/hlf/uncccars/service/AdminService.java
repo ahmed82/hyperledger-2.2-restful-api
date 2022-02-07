@@ -136,9 +136,9 @@ public class AdminService {
 	 * @throws Exception
 	 */
 	public Wallet getWallet() throws Exception {
-				// Create a wallet for managing identities
-				Wallet wallet = Wallets.newFileSystemWallet(Paths.get("wallet"));
-				return wallet;
+		// Create a wallet for managing identities
+		Wallet wallet = Wallets.newFileSystemWallet(Paths.get("wallet"));
+		return wallet;
 	}
 	
 	/**
@@ -148,9 +148,9 @@ public class AdminService {
 	 */
 	public HFCAClient getHFCAClient() throws CryptoException, InvalidArgumentException, ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException, MalformedURLException {
 		// Create a CA client for interacting with the CA.
-		Properties props = new Properties();
-		props.put("pemFile",
-			"../../test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem");
+		Properties props = new Properties();//C:\\Hyperledger-Fabric", "fabric-samples
+		//props.put("pemFile","../../test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem");
+		props.put("pemFile","../../fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem");
 		props.put("allowAllHostNames", "true");
 		HFCAClient caClient = HFCAClient.createNewInstance("https://localhost:7054", props);
 		CryptoSuite cryptoSuite = CryptoSuiteFactory.getDefault().getCryptoSuite();
