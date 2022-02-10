@@ -27,6 +27,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AdminService {
 	
+	public static final String appUser = "appUser";
+	
 	public void EnrollAdmin() throws Exception {
 
 		Wallet wallet = getWallet();
@@ -64,8 +66,8 @@ public class AdminService {
 		HFCAClient caClient = getHFCAClient();
 
 		// Check to see if we've already enrolled the user.
-		if (wallet.get("appUser") != null) {
-			System.out.println("An identity for the user \"appUser\" already exists in the wallet");
+		if (wallet.get(appUser) != null) {
+			System.out.println("An identity for the user "+appUser +" already exists in the wallet");
 			return;
 		}
 
@@ -120,14 +122,14 @@ public class AdminService {
 		};
 
 		// Register the user, enroll the user, and import the new identity into the wallet.
-		RegistrationRequest registrationRequest = new RegistrationRequest("appUser");
+		RegistrationRequest registrationRequest = new RegistrationRequest(appUser);
 		registrationRequest.setAffiliation("org1.department1");
-		registrationRequest.setEnrollmentID("appUser");
+		registrationRequest.setEnrollmentID(appUser);
 		String enrollmentSecret = caClient.register(registrationRequest, admin);
-		/* Enrollment enrollment = */ caClient.enroll("appUser", enrollmentSecret);
+		/* Enrollment enrollment = */ caClient.enroll(appUser, enrollmentSecret);
 		Identity user = Identities.newX509Identity("Org1MSP", adminIdentity.getCertificate(), adminIdentity.getPrivateKey());
-		wallet.put("appUser", user);
-		System.out.println("Successfully enrolled user \"appUser\" and imported it into the wallet");
+		wallet.put(appUser, user);
+		System.out.println("Successfully enrolled user "+appUser+" and imported it into the wallet");
 	}
 	
 	/**
@@ -150,7 +152,7 @@ public class AdminService {
 		// Create a CA client for interacting with the CA.
 		Properties props = new Properties();
 		props.put("pemFile",
-			"../../test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem");
+			"../../fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem");
 		props.put("allowAllHostNames", "true");
 		HFCAClient caClient = HFCAClient.createNewInstance("https://localhost:7054", props);
 		CryptoSuite cryptoSuite = CryptoSuiteFactory.getDefault().getCryptoSuite();
