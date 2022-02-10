@@ -53,6 +53,8 @@ public class WebController {
 
 	@Autowired
 	AdminService adminService;
+	
+// public String appUser1 = adminService.appUser;
 
 	// helper function for getting connected to the gateway
 	private static Gateway connect() throws Exception {
@@ -60,7 +62,8 @@ public class WebController {
 		Path walletPath = Paths.get("wallet");
 		Wallet wallet = Wallets.newFileSystemWallet(walletPath);
 		// load a CCP
-		Path networkConfigPath = Paths.get("..", "..", "test-network", "organizations",	"peerOrganizations", "org1.example.com", "connection-org1.yaml");
+		Path networkConfigPath = Paths.get("..", "..", "fabric-samples","test-network", "organizations",	"peerOrganizations", "org1.example.com", "connection-org1.yaml");
+		//Path networkConfigPath = Paths.get("C:\\Hyperledger-Fabric", "fabric-samples", "test-network", "organizations", "peerOrganizations", "org1.example.com", "connection-org1.yaml");
 		Gateway.Builder builder = Gateway.createBuilder();
 		builder.identity(wallet, "appUser").networkConfig(networkConfigPath).discovery(true);
 		return builder.connect();
@@ -79,6 +82,7 @@ public class WebController {
 		// connect to the network and invoke the smart contract
 		Gateway gateway = connect();
 		// get the network and contract
+		System.out.println("update");
 		Network network = gateway.getNetwork(CHANNEL_NAME);
 		Contract contract = network.getContract(contractName);
 		return contract;
@@ -88,6 +92,14 @@ public class WebController {
 	public ResponseEntity<?> enrolment() throws Exception {
 		// enrolls the admin and registers the user
 		adminService.EnrollAdmin();
+		adminService.RegisterUser();
+		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
+	
+	
+	@GetMapping("/reg")
+	public ResponseEntity<?> registers() throws Exception {
+		// If enrolment already done just registers the user
 		adminService.RegisterUser();
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
