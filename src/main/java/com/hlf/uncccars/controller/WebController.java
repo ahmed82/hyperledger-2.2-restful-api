@@ -54,7 +54,7 @@ public class WebController {
 	@Autowired
 	AdminService adminService;
 	
-// public String appUser1 = adminService.appUser;
+	public static String appUser = "appUser1";
 
 	// helper function for getting connected to the gateway
 	private static Gateway connect() throws Exception {
@@ -65,7 +65,7 @@ public class WebController {
 		Path networkConfigPath = Paths.get("..", "..", "fabric-samples","test-network", "organizations",	"peerOrganizations", "org1.example.com", "connection-org1.yaml");
 		//Path networkConfigPath = Paths.get("C:\\Hyperledger-Fabric", "fabric-samples", "test-network", "organizations", "peerOrganizations", "org1.example.com", "connection-org1.yaml");
 		Gateway.Builder builder = Gateway.createBuilder();
-		builder.identity(wallet, "appUser").networkConfig(networkConfigPath).discovery(true);
+		builder.identity(wallet, appUser).networkConfig(networkConfigPath).discovery(true);
 		return builder.connect();
 	}
 

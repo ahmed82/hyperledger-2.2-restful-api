@@ -27,7 +27,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AdminService {
 	
-	public static final String appUser = "appUser";
+	public static final String appUser = "appUser1";
 	
 	public void EnrollAdmin() throws Exception {
 
