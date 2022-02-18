@@ -9,7 +9,15 @@ make update on the controller and the service to match the location of your loca
 
 1- 
 ```java
+package com.hlf.uncccars.service;
 class AdminService
  method: getHFCAClient()
  Line: 154
+```
+2-
+```java
+package com.hlf.uncccars.controller;
+ class WebController 
+ private static Gateway connect()
+ line 65
 ```
