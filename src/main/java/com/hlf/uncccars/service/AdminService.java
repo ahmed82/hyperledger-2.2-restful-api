@@ -55,6 +55,7 @@ public class AdminService {
 	}
 	
 	public ResponseEntity<?> getBlock() throws CryptoException, InvalidArgumentException, ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException, MalformedURLException{
+		@SuppressWarnings("unused")
 		HFCAClient caClient = getHFCAClient();
 		return null;
 		
